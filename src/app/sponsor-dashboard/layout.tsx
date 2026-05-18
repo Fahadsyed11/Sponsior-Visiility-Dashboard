@@ -1,0 +1,87 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { 
+  LayoutDashboard, 
+  QrCode, 
+  FileText, 
+  Settings,
+  LogOut
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import Header from "@/components/dashboard/Header";
+
+const navItems = [
+  { name: "My Performance", href: "/sponsor-dashboard", icon: LayoutDashboard },
+  { name: "QR Analytics", href: "/sponsor-dashboard/qr", icon: QrCode },
+  { name: "Reports", href: "/sponsor-dashboard/reports", icon: FileText },
+  { name: "Settings", href: "/sponsor-dashboard/settings", icon: Settings },
+];
+
+export default function SponsorDashboardLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+
+  return (
+    <div className="flex h-screen bg-black overflow-hidden">
+      <aside className="w-64 border-r border-white/10 bg-black/50 backdrop-blur-xl flex flex-col h-screen sticky top-0">
+        <div className="p-6">
+          <Link href="/" className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-premium flex items-center justify-center">
+              <span className="text-white text-sm">SV</span>
+            </div>
+            <span>Sponsor<span className="text-primary-500">Vis</span></span>
+          </Link>
+        </div>
+
+        <div className="flex-1 px-4 py-4 space-y-1 overflow-y-auto">
+          <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4 px-2">
+            Sponsor Portal
+          </div>
+          {navItems.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+                  isActive 
+                    ? "bg-primary-500/10 text-primary-400" 
+                    : "text-neutral-400 hover:text-white hover:bg-white/5"
+                )}
+              >
+                <item.icon className={cn("w-5 h-5", isActive ? "text-primary-400" : "text-neutral-500")} />
+                {item.name}
+              </Link>
+            );
+          })}
+        </div>
+
+        <div className="p-4 border-t border-white/10">
+          <div className="flex items-center gap-3 px-3 py-3 rounded-lg glass border-none">
+            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-white font-bold text-xs">
+              TC
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-medium text-white truncate">TechCorp</p>
+              <p className="text-xs text-neutral-500 truncate">Platinum Sponsor</p>
+            </div>
+            <button className="text-neutral-500 hover:text-white transition-colors">
+              <LogOut className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <div className="flex-1 flex flex-col overflow-hidden relative">
+        <div className="absolute top-0 right-1/2 w-full h-[500px] bg-accent-900/10 blur-[120px] rounded-full pointer-events-none -z-10 animate-breathe" />
+        {children}
+      </div>
+    </div>
+  );
+}
